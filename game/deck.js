@@ -111,14 +111,13 @@ Game.prototype = {
 
       this.players[playerIndex].addCardToHand(deckCollection[cardIndex]);
       this.deck.collection.shift(); // Remove top card from deck
-      //console.log('Class Deck: ' + this.deck.collection.length);
-      //console.log('Ref Deck: ' + deckCollection.length);
     }
   },
   playCard: function(player) {
     cardToDeck = player.playNextCard();
     player.removeCardFromHand();
     this.deck.addCard(cardToDeck);
+    return cardToDeck;
   }
 };
 
@@ -128,11 +127,46 @@ var player2 = new Player('megan');
 var player3 = new Player('ripley');
 var game    = new Game([player1, player2, player3]);
 
-console.log(player1.hand);
-console.log(game.deck.collection);
-game.playCard(player1);
-console.log(player1.hand);
-console.log(game.deck.collection);
+/**
+ * Testing
+ */
+function Test(game) {
+  this.game = game;
+  this.assert = require('assert');
+  this.shouldHave52CardsPerDeck();
+  this.shouldProperlyPlayCardFromPlayer();
+}
+
+Test.prototype = {
+  constructor: Test,
+  shouldHave52CardsPerDeck: function() {
+    var total = 0, playerIndex = 0;
+    for (playerIndex in this.game.players) {
+      total += this.game.players[playerIndex].hand.length;
+    }
+    this.assert.equal(total, 52, 'should have 52 cards per deck');
+  },
+  shouldProperlyPlayCardFromPlayer: function () {
+    this.assert.equal(this.game.deck.collection, 0, 'deck should be empty');
+    this.assert.equal(this.game.players[0].hand.length, Math.floor(52 / this.game.players.length), 'player should have proper number of cards');
+
+    // Play first card
+    var card = this.game.playCard(this.game.players[0]);
+    this.assert.equal(this.game.players[0].hand.length, Math.floor(52 / this.game.players.length) - 1, 'player should one less card');
+    this.assert.equal(this.game.deck.collection.length, 1, 'deck should contain first card');
+
+    this.assert.equal(card, this.game.deck.collection[0], 'the proper players card should have been played');
+  }
+};
+
+new Test(game);
+//assert.equal(1, 1, 'nope');
+
+// console.log(player1.hand);
+// console.log(game.deck.collection);
+// game.playCard(player1);
+// console.log(player1.hand);
+// console.log(game.deck.collection);
 
 // console.log(player1);
 // console.log(player2);
