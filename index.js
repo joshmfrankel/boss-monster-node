@@ -1,26 +1,14 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+// Express app
+var app = express();
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
-});
+// Creat http server with node
+// pass it express and listen on 8080
+var server = require('http').createServer(app).listen(8080);
 
-io.on('connection', function(socket){
-  //socket.emit('user connected');
+// Init socket.io and listen to express/http server
+var io = require('socket.io').listen(server);
 
-  //console.log('a user connected');
-
-  socket.on('disconnect', function() {
-    console.log('user disconnected');
-    io.emit('disconnect');
-  });
-
-  socket.on('chat message', function(msg) {
-    io.emit('chat message', msg);
-  });
-});
-
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+io.sockets.on('connection', function (socket) {
+  console.log('client connected');
+  agx.initGame(io, socket);
 });
