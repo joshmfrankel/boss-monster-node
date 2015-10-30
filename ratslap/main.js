@@ -10,6 +10,10 @@ var Game   = require('./game/game.js');
 var Player = require('./game/player.js');
 var Test   = require('./spec/test.js');
 
+var config = {
+  debug: true,
+}
+
 // Load files in the client directory as static assets
 app.use(express.static('client'));
 
@@ -20,13 +24,31 @@ app.get('/', function(req, res){
 
 // Server Socket.io
 io.on('connection', function(socket) {
-  console.log('a user connected');
+  debug_helper('A user connected');
+
+  socket.on('disconnect', function() {
+    debug_helper('A user disconnected');
+  });
+
+  socket.on('create game', function() {
+    debug_helper('A new game was created');
+  });
+
+  socket.on('create player', function(playerName) {
+    var player = new Player(playerName);
+    io.emit('player object', player);
+    debug_helper('player ' + playerName + ' was created');
+  });
 });
 
 // HTTP server
 http.listen(3000, function(){
-  console.log('listening on *:3000');
+  debug_helper('listening on *:3000');
 });
+
+function debug_helper(message) {
+  if (config.debug) console.log('SERVER :: ' + message);
+}
 
 // Logic
 // var player1 = new Player('josh');
