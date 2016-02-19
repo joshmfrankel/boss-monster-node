@@ -1,0 +1,27 @@
+<!DOCTYPE>
+<html>
+<head>
+  <title>Node Games!</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <h2>Welcome</h2>
+
+  <form class="create-player-form" action="">
+    <label>Please enter your name
+      <input id="playerName" autocomplete="off" required />
+    </label>
+    <button type="submit">Create Player</button>
+  </form>
+
+  <div class="player-options hide">
+    <button class='create-game'>Create Game</button>
+    <button class='join-game'>Join Game</button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>
